@@ -1,0 +1,2 @@
+python learning/train_jax_ppo.py --env_name CartpoleBalance 
+python learning/train_jax_ppo.py --env_name MyCubeReorient --num_timesteps=500000 --num_evals=1 --num_envs=64 --batch_size=32
