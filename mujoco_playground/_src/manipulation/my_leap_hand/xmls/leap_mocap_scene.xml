@@ -1,0 +1,28 @@
+<mujoco model="leap_mocap_scene">
+  <!-- Keep relative mesh resolution local to this file -->
+  <compiler meshdir=""/>
+
+  <!-- Include the LEAP Hand model (root body name: leap_mount) -->
+  <include file="leap_rh_mjx.xml"/>
+
+  <!-- Stable-ish defaults for interactive control -->
+  <option timestep="0.004" integrator="implicitfast" iterations="10" ls_iterations="20"/>
+
+  <worldbody>
+    <!-- Kinematic target: driven externally via data.mocap_pos / data.mocap_quat -->
+    <body name="hand_target" mocap="true" pos="0 0 0.8" quat="1 0 0 0">
+      <site name="hand_target_site" size="0.01" rgba="0 1 0 0.6"/>
+    </body>
+
+    <!-- Optional helpers -->
+    <geom type="plane" name="floor" pos="0 0 -0.5" size="0 0 0.01" contype="0" conaffinity="0" rgba="0.9 0.9 0.9 1"/>
+    <camera name="cam" pos="1.2 0.0 0.9" xyaxes="0.0 -1.0 0.0 0.4 0.0 0.9"/>
+  </worldbody>
+
+  <!-- Rigidly attach LEAP root to the mocap target -->
+  <equality>
+    <weld body1="hand_target" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001"/>
+  </equality>
+</mujoco>
+
+

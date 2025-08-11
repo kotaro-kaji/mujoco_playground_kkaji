@@ -1,0 +1,50 @@
+<mujoco model="leap_hand_6dof_ctrl">
+  <compiler meshdir=""/>
+
+  <!-- Include LEAP Hand (provides finger actuators) -->
+  <include file="leap_rh_mjx.xml"/>
+
+  <option timestep="0.004" integrator="implicitfast" iterations="10" ls_iterations="20"/>
+
+  <default>
+    <default class="base6dof">
+      <joint damping="1e-3" armature="0.0" limited="true"/>
+      <position kp="120"/>
+    </default>
+  </default>
+
+  <worldbody>
+    <!-- 6-DoF controllable base -->
+    <body name="hand_base" pos="0 0 0.8">
+      <!-- Translate -->
+      <joint name="base_x" type="slide" axis="1 0 0" range="-1.0 1.0" class="base6dof"/>
+      <joint name="base_y" type="slide" axis="0 1 0" range="-1.0 1.0" class="base6dof"/>
+      <joint name="base_z" type="slide" axis="0 0 1" range="0.0 1.5" class="base6dof"/>
+      <!-- Rotate (ZYX order: yaw, pitch, roll) -->
+      <joint name="base_yaw"   type="hinge" axis="0 0 1" range="-3.1416 3.1416" class="base6dof"/>
+      <joint name="base_pitch" type="hinge" axis="0 1 0" range="-1.57 1.57" class="base6dof"/>
+      <joint name="base_roll"  type="hinge" axis="1 0 0" range="-1.57 1.57" class="base6dof"/>
+      <site name="base_mount_site" size="0.01" rgba="0 0 1 0.6"/>
+    </body>
+
+    <geom type="plane" name="floor" pos="0 0 -0.5" size="0 0 0.01" contype="0" conaffinity="0" rgba="0.9 0.9 0.9 1"/>
+    <camera name="cam" pos="1.2 0.0 0.9" xyaxes="0.0 -1.0 0.0 0.4 0.0 0.9"/>
+  </worldbody>
+
+  <!-- Weld LEAP to the controllable base. Adjust relpose if needed to match the intended mounting -->
+  <equality>
+    <weld body1="hand_base" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001"/>
+  </equality>
+
+  <actuator>
+    <!-- Position controllers for 6-DoF base (RL action can write to these) -->
+    <position name="act_base_x"     joint="base_x"     kp="150" forcerange="-500 500"/>
+    <position name="act_base_y"     joint="base_y"     kp="150" forcerange="-500 500"/>
+    <position name="act_base_z"     joint="base_z"     kp="150" forcerange="-500 500"/>
+    <position name="act_base_yaw"   joint="base_yaw"   kp="60"  forcerange="-200 200"/>
+    <position name="act_base_pitch" joint="base_pitch" kp="60"  forcerange="-200 200"/>
+    <position name="act_base_roll"  joint="base_roll"  kp="60"  forcerange="-200 200"/>
+  </actuator>
+</mujoco>
+
+
