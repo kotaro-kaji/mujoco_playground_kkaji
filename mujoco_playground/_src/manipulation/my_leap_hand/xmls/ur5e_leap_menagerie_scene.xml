@@ -1,0 +1,23 @@
+<mujoco model="ur5e_leap_menagerie_scene">
+  <!-- Use Menagerie UR5e and local LEAP Hand as-is -->
+  <include file="../../../../../mujoco_menagerie/universal_robots_ur5e/ur5e.xml"/>
+  <include file="leap_rh_mjx.xml"/>
+
+  <visual>
+    <global azimuth="120" elevation="-20"/>
+  </visual>
+
+  <worldbody>
+    <!-- Optional: simple floor (non-colliding) and a camera -->
+    <geom name="floor" type="plane" pos="0 0 -0.5" size="0 0 0.01" contype="0" conaffinity="0"/>
+    <camera name="cam" pos="1.5 0.0 0.9" xyaxes="0.0 -1.0 0.0 0.4 0.0 0.9"/>
+  </worldbody>
+
+  <!-- Rigidly weld LEAP Hand base to UR5e wrist_3_link.
+       The weld preserves the initial relative transform at load time. -->
+  <equality>
+    <weld body1="wrist_3_link" body2="leap_mount" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+  </equality>
+</mujoco>
+
+

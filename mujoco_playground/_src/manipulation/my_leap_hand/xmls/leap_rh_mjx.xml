@@ -284,13 +284,6 @@
   </worldbody>
 
   <actuator>
-    <!-- 6D spatial actuators to drive the free body 'leap_mount' (forces and torques in body frame) -->
-    <motor name="leap_mount_fx" body="leap_mount" gear="1 0 0 0 0 0" ctrllimited="true" ctrlrange="-50 50"/>
-    <motor name="leap_mount_fy" body="leap_mount" gear="0 1 0 0 0 0" ctrllimited="true" ctrlrange="-50 50"/>
-    <motor name="leap_mount_fz" body="leap_mount" gear="0 0 1 0 0 0" ctrllimited="true" ctrlrange="-50 50"/>
-    <motor name="leap_mount_tx" body="leap_mount" gear="0 0 0 1 0 0" ctrllimited="true" ctrlrange="-10 10"/>
-    <motor name="leap_mount_ty" body="leap_mount" gear="0 0 0 0 1 0" ctrllimited="true" ctrlrange="-10 10"/>
-    <motor name="leap_mount_tz" body="leap_mount" gear="0 0 0 0 0 1" ctrllimited="true" ctrlrange="-10 10"/>
     <position name="if_mcp_act" joint="if_mcp" class="mcp"/>
     <position name="if_rot_act" joint="if_rot" class="rot"/>
     <position name="if_pip_act" joint="if_pip" class="pip"/>
