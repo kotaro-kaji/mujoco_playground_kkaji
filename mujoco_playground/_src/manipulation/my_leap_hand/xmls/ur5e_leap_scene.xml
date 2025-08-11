@@ -1,6 +1,6 @@
-<mujoco model="ur5e_leap_scene">
-  <!-- Include the LEAP right-hand model (contains leap_mount as root body) -->
-  <include file="leap_rh_mjx.xml"/>
+<!-- Moved to legacy. Use legacy/ur5e_leap_scene.xml instead. -->
+<mujoco model="DEPRECATED_ur5e_leap_scene">
+  <include file="legacy/ur5e_leap_scene.xml"/>
 
   <visual>
     <global azimuth="120" elevation="-20"/>
@@ -10,70 +10,8 @@
     <position kp="200" inheritrange="1"/>
   </default>
 
-  <worldbody>
-    <!-- Optional floor for reference (non-colliding with anything here) -->
-    <geom name="floor" pos="0 0 -0.5" size="0 0 0.01" type="plane" contype="0" conaffinity="0"/>
-
-    <!-- Minimal UR5e-like kinematic chain (approximate link offsets), no collisions -->
-    <body name="ur5e_base" pos="0 0 0" quat="1 0 0 0">
-      <geom type="box" size="0.02 0.02 0.02" mass="0.1" contype="0" conaffinity="0" group="2"/>
-
-      <!-- Joint 1: base rotation around +Z -->
-      <body name="ur5e_shoulder" pos="0 0 0.1625">
-        <joint name="ur5e_j1" type="hinge" axis="0 0 1" limited="true" range="-6.283 6.283"/>
-        <geom type="box" size="0.015 0.015 0.015" mass="0.1" contype="0" conaffinity="0" group="2"/>
-
-        <!-- Joint 2: shoulder lift around +Y -->
-        <body name="ur5e_upperarm" pos="0 0 0">
-          <joint name="ur5e_j2" type="hinge" axis="0 1 0" limited="true" range="-6.283 6.283"/>
-          <geom type="box" size="0.015 0.015 0.015" mass="0.1" contype="0" conaffinity="0" group="2"/>
-
-          <!-- Link offset a2 ~ -0.425 along -X -->
-          <body name="ur5e_forearm" pos="-0.425 0 0">
-            <!-- Joint 3: elbow around +Y -->
-            <joint name="ur5e_j3" type="hinge" axis="0 1 0" limited="true" range="-6.283 6.283"/>
-            <geom type="box" size="0.015 0.015 0.015" mass="0.1" contype="0" conaffinity="0" group="2"/>
-
-            <!-- Link offset a3 ~ -0.3922 along -X -->
-            <body name="ur5e_wrist1" pos="-0.3922 0 0">
-              <!-- Joint 4: wrist1 around +Y -->
-              <joint name="ur5e_j4" type="hinge" axis="0 1 0" limited="true" range="-6.283 6.283"/>
-              <geom type="box" size="0.012 0.012 0.012" mass="0.08" contype="0" conaffinity="0" group="2"/>
-
-              <!-- Link offset d4 ~ +0.1333 along +Z -->
-              <body name="ur5e_wrist2" pos="0 0 0.1333">
-                <!-- Joint 5: wrist2 around +Z -->
-                <joint name="ur5e_j5" type="hinge" axis="0 0 1" limited="true" range="-6.283 6.283"/>
-                <geom type="box" size="0.01 0.01 0.01" mass="0.06" contype="0" conaffinity="0" group="2"/>
-
-                <!-- Link offset d5 ~ +0.0997 along +Z; small tool flange offset d6 ~ +0.0996 -->
-                <body name="ur5e_flange" pos="0 0 0.1993">
-                  <!-- Joint 6: tool rotation around +Y -->
-                  <joint name="ur5e_j6" type="hinge" axis="0 1 0" limited="true" range="-6.283 6.283"/>
-                  <geom type="box" size="0.008 0.008 0.008" mass="0.05" contype="0" conaffinity="0" group="2"/>
-                  <site name="ur5e_tool0" pos="0 0 0" group="4"/>
-                </body>
-              </body>
-            </body>
-          </body>
-        </body>
-      </body>
-    </body>
-  </worldbody>
-
-  <!-- Rigidly attach LEAP hand's root (leap_mount) to the UR5e flange -->
-  <equality>
-    <weld body1="ur5e_flange" body2="leap_mount" solref="0.02 1" solimp="0.9 0.95 0.001"/>
-  </equality>
-
-  <actuator>
-    <position name="ur5e_j1_act" joint="ur5e_j1"/>
-    <position name="ur5e_j2_act" joint="ur5e_j2"/>
-    <position name="ur5e_j3_act" joint="ur5e_j3"/>
-    <position name="ur5e_j4_act" joint="ur5e_j4"/>
-    <position name="ur5e_j5_act" joint="ur5e_j5"/>
-    <position name="ur5e_j6_act" joint="ur5e_j6"/>
-  </actuator>
+  <worldbody/>
+  <actuator/>
 </mujoco>
 
 

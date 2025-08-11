@@ -122,12 +122,13 @@
   </worldbody>
 
   <actuator>
-    <general class="size3" name="shoulder_pan" joint="shoulder_pan_joint"/>
-    <general class="size3" name="shoulder_lift" joint="shoulder_lift_joint"/>
-    <general class="size3_limited" name="elbow" joint="elbow_joint"/>
-    <general class="size1" name="wrist_1" joint="wrist_1_joint"/>
-    <general class="size1" name="wrist_2" joint="wrist_2_joint"/>
-    <general class="size1" name="wrist_3" joint="wrist_3_joint"/>
+    <!-- Replace high-gain general actuators with moderate-gain position controllers to reduce vibration -->
+    <position name="shoulder_pan" joint="shoulder_pan_joint" kp="80" ctrlrange="-3.1415 3.1415" forcerange="-150 150"/>
+    <position name="shoulder_lift" joint="shoulder_lift_joint" kp="80" ctrlrange="-3.1415 3.1415" forcerange="-150 150"/>
+    <position name="elbow" joint="elbow_joint" kp="60" ctrlrange="-3.1415 3.1415" forcerange="-120 120"/>
+    <position name="wrist_1" joint="wrist_1_joint" kp="40" ctrlrange="-3.1415 3.1415" forcerange="-60 60"/>
+    <position name="wrist_2" joint="wrist_2_joint" kp="40" ctrlrange="-3.1415 3.1415" forcerange="-60 60"/>
+    <position name="wrist_3" joint="wrist_3_joint" kp="30" ctrlrange="-3.1415 3.1415" forcerange="-40 40"/>
   </actuator>
 </mujoco>
 

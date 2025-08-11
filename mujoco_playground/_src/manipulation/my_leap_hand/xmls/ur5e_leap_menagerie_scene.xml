@@ -5,6 +5,9 @@
   <compiler meshdir=""/>
   <include file="leap_rh_mjx.xml"/>
 
+  <!-- Unify simulation options for the combined scene to improve stability -->
+  <option timestep="0.004" integrator="implicitfast" iterations="10" ls_iterations="20"/>
+
   <visual>
     <global azimuth="120" elevation="-20"/>
   </visual>
@@ -18,7 +21,7 @@
   <!-- Rigidly weld LEAP Hand base to UR5e wrist_3_link.
        The weld preserves the initial relative transform at load time. -->
   <equality>
-    <weld body1="wrist_3_link" body2="leap_mount" solref="0.02 1" solimp="0.9 0.95 0.001"/>
+    <weld body1="wrist_3_link" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001" relpose="0 0.1 0 -1 1 0 0"/>
   </equality>
 </mujoco>
 
