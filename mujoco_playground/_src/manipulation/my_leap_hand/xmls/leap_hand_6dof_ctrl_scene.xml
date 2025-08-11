@@ -6,6 +6,13 @@
 
   <option timestep="0.004" integrator="implicitfast" iterations="10" ls_iterations="20"/>
 
+  <asset>
+    <!-- Checker grid for ground -->
+    <texture name="grid_tex" type="2d" builtin="checker" width="512" height="512"
+             rgb1="0.22 0.22 0.22" rgb2="0.28 0.28 0.28"/>
+    <material name="grid_mat" texture="grid_tex" texrepeat="40 40" texuniform="true"/>
+  </asset>
+
   <default>
     <default class="base6dof">
       <joint damping="1e-3" armature="0.0" limited="true"/>
@@ -17,36 +24,37 @@
     <!-- 6-DoF controllable base -->
     <body name="hand_base" pos="0 0 0.8">
       <!-- Provide mass and rotational inertia so this moving base is physically valid -->
-      <inertial mass="0.5" diaginertia="0.002 0.002 0.002" pos="0 0 0"/>
+      <inertial mass="1.0" diaginertia="0.01 0.01 0.01" pos="0 0 0"/>
       <!-- Translate -->
-      <joint name="base_x" type="slide" axis="1 0 0" range="-1.0 1.0" class="base6dof"/>
-      <joint name="base_y" type="slide" axis="0 1 0" range="-1.0 1.0" class="base6dof"/>
-      <joint name="base_z" type="slide" axis="0 0 1" range="0.0 1.5" class="base6dof"/>
+      <joint name="base_x" type="slide" axis="1 0 0" range="-1.0 1.0" damping="1.0" class="base6dof"/>
+      <joint name="base_y" type="slide" axis="0 1 0" range="-1.0 1.0" damping="1.0" class="base6dof"/>
+      <joint name="base_z" type="slide" axis="0 0 1" range="0.0 1.5" damping="1.5" class="base6dof"/>
       <!-- Rotate (ZYX order: yaw, pitch, roll) -->
-      <joint name="base_yaw"   type="hinge" axis="0 0 1" range="-3.1416 3.1416" class="base6dof"/>
-      <joint name="base_pitch" type="hinge" axis="0 1 0" range="-1.57 1.57" class="base6dof"/>
-      <joint name="base_roll"  type="hinge" axis="1 0 0" range="-1.57 1.57" class="base6dof"/>
+      <joint name="base_yaw"   type="hinge" axis="0 0 1" range="-3.1416 3.1416" damping="0.5" class="base6dof"/>
+      <joint name="base_pitch" type="hinge" axis="0 1 0" range="-1.57 1.57" damping="0.5" class="base6dof"/>
+      <joint name="base_roll"  type="hinge" axis="1 0 0" range="-1.57 1.57" damping="0.5" class="base6dof"/>
       <site name="base_mount_site" size="0.01" rgba="0 0 1 0.6"/>
     </body>
 
-    <geom type="plane" name="floor" pos="0 0 -0.5" size="0 0 0.01" contype="0" conaffinity="0" rgba="0.9 0.9 0.9 1"/>
+    <geom type="plane" name="floor" pos="0 0 -0.5" size="0 0 0.01" contype="0" conaffinity="0"
+          material="grid_mat" rgba="1 1 1 1"/>
     <camera name="cam" pos="1.2 0.0 0.9" xyaxes="0.0 -1.0 0.0 0.4 0.0 0.9"/>
   </worldbody>
 
   <!-- Weld LEAP to the controllable base. Adjust relpose if needed to match the intended mounting -->
   <equality>
-    <!-- Zero-offset weld so the controllable base and LEAP root coincide at load -->
-    <weld body1="hand_base" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001" relpose="0 0 0 1 0 0 0"/>
+    <!-- Overdamped weld to reduce oscillations -->
+    <weld body1="hand_base" body2="leap_mount" solref="0.01 2" solimp="0.98 0.995 0.001" relpose="0 0 0 1 0 0 0"/>
   </equality>
 
   <actuator>
     <!-- Position controllers for 6-DoF base (RL action can write to these) -->
-    <position name="act_base_x"     joint="base_x"     kp="150" forcerange="-500 500"/>
-    <position name="act_base_y"     joint="base_y"     kp="150" forcerange="-500 500"/>
-    <position name="act_base_z"     joint="base_z"     kp="150" forcerange="-500 500"/>
-    <position name="act_base_yaw"   joint="base_yaw"   kp="60"  forcerange="-200 200"/>
-    <position name="act_base_pitch" joint="base_pitch" kp="60"  forcerange="-200 200"/>
-    <position name="act_base_roll"  joint="base_roll"  kp="60"  forcerange="-200 200"/>
+    <position name="act_base_x"     joint="base_x"     kp="100" forcerange="-400 400"/>
+    <position name="act_base_y"     joint="base_y"     kp="100" forcerange="-400 400"/>
+    <position name="act_base_z"     joint="base_z"     kp="100" forcerange="-400 400"/>
+    <position name="act_base_yaw"   joint="base_yaw"   kp="40"  forcerange="-150 150"/>
+    <position name="act_base_pitch" joint="base_pitch" kp="40"  forcerange="-150 150"/>
+    <position name="act_base_roll"  joint="base_roll"  kp="40"  forcerange="-150 150"/>
   </actuator>
 </mujoco>
 
