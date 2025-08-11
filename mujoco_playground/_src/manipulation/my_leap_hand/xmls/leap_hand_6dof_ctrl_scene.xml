@@ -16,6 +16,8 @@
   <worldbody>
     <!-- 6-DoF controllable base -->
     <body name="hand_base" pos="0 0 0.8">
+      <!-- Provide mass and rotational inertia so this moving base is physically valid -->
+      <inertial mass="0.5" diaginertia="0.002 0.002 0.002" pos="0 0 0"/>
       <!-- Translate -->
       <joint name="base_x" type="slide" axis="1 0 0" range="-1.0 1.0" class="base6dof"/>
       <joint name="base_y" type="slide" axis="0 1 0" range="-1.0 1.0" class="base6dof"/>
