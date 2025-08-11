@@ -24,17 +24,17 @@
 
   <worldbody>
     <!-- 6-DoF controllable base -->
-    <body name="hand_base" pos="0 0 0.8">
+    <body name="hand_base" pos="0 0 0.8" quat="0 1 0 0">
       <!-- Provide mass and rotational inertia so this moving base is physically valid -->
       <inertial mass="1.0" diaginertia="0.01 0.01 0.01" pos="0 0 0"/>
       <!-- Translate -->
       <joint name="base_x" type="slide" axis="1 0 0" range="-1.0 1.0" damping="50.0" armature="0.01" class="base6dof"/>
       <joint name="base_y" type="slide" axis="0 1 0" range="-1.0 1.0" damping="50.0" armature="0.01" class="base6dof"/>
-      <joint name="base_z" type="slide" axis="0 0 1" range="0.0 1.5" damping="50.5" armature="0.015" class="base6dof"/>
+      <joint name="base_z" type="slide" axis="0 0 1" range="-1.4 1.5" damping="50.5" armature="0.015" class="base6dof"/>
       <!-- Rotate (ZYX order: yaw, pitch, roll) -->
       <joint name="base_yaw"   type="hinge" axis="0 0 1" range="-3.1416 3.1416" damping="2.0" armature="0.005" class="base6dof"/>
       <joint name="base_pitch" type="hinge" axis="0 1 0" range="-1.57 1.57" damping="2.0" armature="0.005" class="base6dof"/>
-      <joint name="base_roll"  type="hinge" axis="1 0 0" range="-1.57 1.57" damping="2.0" armature="0.005" class="base6dof"/>
+      <joint name="base_roll"  type="hinge" axis="1 0 0" range="-6.2832 6.2832" damping="2.0" armature="0.005" class="base6dof"/>
       <site name="base_mount_site" size="0.01" rgba="0 0 1 0.6"/>
     </body>
 
