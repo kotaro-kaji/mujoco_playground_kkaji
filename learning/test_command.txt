@@ -1,2 +1,9 @@
 python learning/train_jax_ppo.py --env_name CartpoleBalance 
 python learning/train_jax_ppo.py --env_name MyCubeReorient --num_timesteps=500000 --num_evals=1 --num_envs=64 --batch_size=32
+python learning/train_jax_ppo.py --env_name MyCubeReorient --play_only=True --load_checkpoint_path=logs/MyCubeReorient-20250808-130916/checkpoints
+python learning/train_jax_ppo.py --env_name LEAPCubeReorient --num_timesteps=500000 --num_evals=1 --num_envs=64 --batch_size=32
+python learning/train_jax_ppo.py --env_name PandaPickCubeOrientation --num_timesteps=500000 --num_evals=1 --num_envs=64 --batch_size=32
+
+
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xmls/my_scene_mjx_cube.xml
+
