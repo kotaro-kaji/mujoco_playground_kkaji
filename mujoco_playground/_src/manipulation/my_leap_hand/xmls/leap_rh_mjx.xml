@@ -1,5 +1,5 @@
 <mujoco model="leap_rh">
-  <compiler angle="radian" autolimits="true"/>
+  <compiler angle="radian" autolimits="true" meshdir=""/>
 
   <option timestep="0.01" integrator="Euler" iterations="5" ls_iterations="8">
     <flag eulerdamp="disable"/>
