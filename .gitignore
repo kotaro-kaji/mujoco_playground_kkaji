@@ -7,3 +7,22 @@ mujoco_menagerie
 checkpoints/
 
 MJDATA.TXT
+
+*.png
+*.jpg
+*.mp4
+*.gif
+*.mov
+*.avi
+*.mkv
+*.webm
+
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.mp4
+**/*.mov
+**/*.avi
+**/*.mkv
+**/*.webm
