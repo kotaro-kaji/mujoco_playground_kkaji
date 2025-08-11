@@ -7,3 +7,10 @@ python learning/train_jax_ppo.py --env_name PandaPickCubeOrientation --num_times
 
 __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xmls/my_scene_mjx_cube.xml
 
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xmls/leap_rh_mjx.xml
+
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xmls/ur5e_leap_menagerie_scene.xml 2>&1 | tee mj_error.log
+
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xmls/ur5e_leap_scene.xml
+
+python quick_mjcf_check.py 2>&1 | tee mj_error.log
