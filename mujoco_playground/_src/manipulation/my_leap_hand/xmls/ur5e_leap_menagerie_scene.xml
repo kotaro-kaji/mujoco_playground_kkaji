@@ -1,10 +1,8 @@
 <mujoco model="ur5e_leap_menagerie_scene">
-  <!-- Clear meshdir to avoid relative path bleed across includes -->
-  <compiler angle="radian" autolimits="true" meshdir=""/>
-
-  <!-- Include LEAP then UR5e from menagerie -->
-  <include file="leap_rh_mjx.xml"/>
+  <!-- Include UR5e first (defines meshdir="assets"), then reset meshdir before including LEAP Hand -->
   <include file="../../../../../mujoco_menagerie/universal_robots_ur5e/ur5e.xml"/>
+  <compiler meshdir=""/>
+  <include file="leap_rh_mjx.xml"/>
 
   <visual>
     <global azimuth="120" elevation="-20"/>
