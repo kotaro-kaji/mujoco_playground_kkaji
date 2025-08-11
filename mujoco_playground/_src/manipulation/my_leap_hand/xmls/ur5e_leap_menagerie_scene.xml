@@ -1,6 +1,8 @@
 <mujoco model="ur5e_leap_menagerie_scene">
   <!-- Include local UR5e wrapper that sets meshdir absolute to menagerie assets -->
   <include file="ur5e_local.xml"/>
+  <!-- Reset meshdir so subsequent includes (LEAP) resolve their own relative paths correctly -->
+  <compiler meshdir=""/>
   <include file="leap_rh_mjx.xml"/>
 
   <visual>
