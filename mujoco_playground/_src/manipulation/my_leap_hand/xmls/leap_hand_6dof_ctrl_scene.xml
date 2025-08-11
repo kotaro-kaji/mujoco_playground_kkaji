@@ -35,7 +35,8 @@
 
   <!-- Weld LEAP to the controllable base. Adjust relpose if needed to match the intended mounting -->
   <equality>
-    <weld body1="hand_base" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001"/>
+    <!-- Zero-offset weld so the controllable base and LEAP root coincide at load -->
+    <weld body1="hand_base" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001" relpose="0 0 0 1 0 0 0"/>
   </equality>
 
   <actuator>

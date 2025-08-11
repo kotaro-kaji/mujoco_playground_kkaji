@@ -21,7 +21,7 @@
 
   <!-- Rigidly attach LEAP root to the mocap target -->
   <equality>
-    <weld body1="hand_target" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001"/>
+    <weld body1="hand_target" body2="leap_mount" solref="0.05 1" solimp="0.95 0.99 0.001" relpose="0 0 0 1 0 0 0"/>
   </equality>
 </mujoco>
 
