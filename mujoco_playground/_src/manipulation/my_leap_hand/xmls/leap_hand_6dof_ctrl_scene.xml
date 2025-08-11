@@ -3,6 +3,8 @@
 
   <!-- Include LEAP Hand (provides finger actuators) -->
   <include file="leap_rh_mjx.xml"/>
+  <!-- Include shared reorientation cube (visual + physical) -->
+  <include file="reorientation_cube.xml"/>
 
   <option timestep="0.004" integrator="implicitfast" iterations="10" ls_iterations="20"/>
 
@@ -41,13 +43,6 @@
     <!-- Invisible physical ground for contact tests (keeps grid visual clean) -->
     <geom type="plane" name="ground_physical" pos="0 0 -0.5" size="0 0 0.01" contype="1" conaffinity="1"
           friction="0.8 0.01 0.0001" rgba="1 1 1 0"/>
-
-    <!-- Drop-test cube -->
-    <body name="test_cube" pos="0.15 0.0 1.30">
-      <inertial mass="0.2" diaginertia="8e-05 8e-05 8e-05" pos="0 0 0"/>
-      <geom name="test_cube_geom" type="box" size="0.025 0.025 0.025" rgba="0.8 0.2 0.2 1"
-            friction="0.7 0.005 0.0001"/>
-    </body>
     <camera name="cam" pos="1.2 0.0 0.9" xyaxes="0.0 -1.0 0.0 0.4 0.0 0.9"/>
   </worldbody>
 
