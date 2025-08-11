@@ -121,7 +121,7 @@
   </contact>
 
   <worldbody>
-    <light name="spotlight" mode="targetbodycom" target="palm" pos="3 0 4"/>
+    <light name="leap_spotlight" mode="targetbodycom" target="palm" pos="3 0 4"/>
     <body name="leap_mount" pos="0 0 0" quat="1 0 0 0" childclass="leap_rh">
       <freejoint name="leap_mount_freejoint"/>
        <geom name="leap_mount_visual" pos="0 0 0" quat="1 0 0 0" class="leap_visual" mesh="leap_mount"/>
