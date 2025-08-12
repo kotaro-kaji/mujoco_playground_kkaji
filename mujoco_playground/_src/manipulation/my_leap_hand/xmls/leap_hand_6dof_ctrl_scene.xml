@@ -7,7 +7,7 @@
   <include file="reorientation_cube.xml"/>
   <statistic center="0.15 0 0" extent="0.4" meansize="0.01"/>
 
-  <option timestep="0.01" integrator="Euler" iterations="5" ls_iterations="8"/>
+  <option timestep="0.01" integrator="Euler" iterations="5" ls_iterations="8">
       <flag eulerdamp="disable"/>
   </option>
 
@@ -101,13 +101,23 @@
     <position name="act_base_roll"  joint="base_roll"  kp="80"  forcerange="-250 250"/>
   </actuator>
 
-  <!-- Keyframe for initial pose/control targets -->
+  <!-- Keyframe for initial pose/control targets (also resets cube pose) -->
   <keyframe>
-    <!-- Order of ctrl follows actuator declaration order across includes:
-         [LEAP hand finger actuators (16 zeros), base actuators (6 values)] -->
-    <key name="home" ctrl="
+    <!-- qpos order:
+         base(6), leap_mount_freejoint(7), finger joints(16), cube_freejoint(7) -->
+    <key name="home" qpos="
+      0 0 0 0 0 0
+      0 0 0.6 1 0 0 0
+      0.8 0 0.8 0.8
+      0.8 0 0.8 0.8
+      0.8 0 0.8 0.8
+      0.8 0.8 0.8 0
+      0.11 0.0 -0.465 1 0 0 0"
+      ctrl="
       0 0 0 0  0 0 0 0  0 0 0 0  0 0 0 0
-      0 0 0.3  0 0 0"/>
+      0 0 0.3  0 0 0"
+      mpos="0.325 0.17 0.0475"
+      mquat="1 0 0 0"/>
   </keyframe>
 </mujoco>
 
