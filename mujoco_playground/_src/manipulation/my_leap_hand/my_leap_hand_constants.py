@@ -22,7 +22,7 @@ CUBE_XML = ROOT_PATH / "xmls" / "leap_hand_6dof_ctrl_scene.xml"
 # 22は、base(6), finger joints(16)
 NQ = 22
 NV = 22
-NU = 22
+NU = 22  # 実際の制御次元は手指16 + base6 = 22
 
 JOINT_NAMES = [
     # index

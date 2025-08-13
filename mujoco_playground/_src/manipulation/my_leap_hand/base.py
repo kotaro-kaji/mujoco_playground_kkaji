@@ -84,11 +84,26 @@ class MyLeapHandEnv(mjx_env.MjxEnv):
   def get_cube_upvector(self, data: mjx.Data) -> jax.Array:
     return mjx_env.get_sensor_data(self.mj_model, data, "cube_upvector")
 
+  
+
+  def get_cube_goal_position(self, data: mjx.Data) -> jax.Array:
+    return mjx_env.get_sensor_data(self.mj_model, data, "cube_goal_position")
+
   def get_cube_goal_orientation(self, data: mjx.Data) -> jax.Array:
     return mjx_env.get_sensor_data(self.mj_model, data, "cube_goal_orientation")
 
-  def get_cube_goal_upvector(self, data: mjx.Data) -> jax.Array:
-    return mjx_env.get_sensor_data(self.mj_model, data, "cube_goal_upvector")
+  # Base sensors
+  def get_base_position(self, data: mjx.Data) -> jax.Array:
+    return mjx_env.get_sensor_data(self.mj_model, data, "base_position")
+
+  def get_base_orientation(self, data: mjx.Data) -> jax.Array:
+    return mjx_env.get_sensor_data(self.mj_model, data, "base_orientation")
+
+  def get_base_linvel(self, data: mjx.Data) -> jax.Array:
+    return mjx_env.get_sensor_data(self.mj_model, data, "base_linvel")
+
+  def get_base_angvel(self, data: mjx.Data) -> jax.Array:
+    return mjx_env.get_sensor_data(self.mj_model, data, "base_angvel")
 
   def get_fingertip_positions(self, data: mjx.Data) -> jax.Array:
     """Get fingertip positions relative to the grasp site."""

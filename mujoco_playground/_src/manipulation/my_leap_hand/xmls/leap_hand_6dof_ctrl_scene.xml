@@ -81,8 +81,31 @@
     <framepos name="mf_tip_position" objtype="site" objname="mf_tip" reftype="site" refname="grasp_site"/>
     <framepos name="rf_tip_position" objtype="site" objname="rf_tip" reftype="site" refname="grasp_site"/>
 
+    <!-- base (hand_base) pose and velocities -->
+    <framepos name="base_position" objtype="body" objname="hand_base"/>
+    <framequat name="base_orientation" objtype="body" objname="hand_base"/>
+    <framelinvel name="base_linvel" objtype="body" objname="hand_base"/>
+    <frameangvel name="base_angvel" objtype="body" objname="hand_base"/>
+
+    <!-- base joint states -->
+    <jointpos name="base_x_pos" joint="base_x"/>
+    <jointpos name="base_y_pos" joint="base_y"/>
+    <jointpos name="base_z_pos" joint="base_z"/>
+    <jointpos name="base_yaw_pos" joint="base_yaw"/>
+    <jointpos name="base_pitch_pos" joint="base_pitch"/>
+    <jointpos name="base_roll_pos" joint="base_roll"/>
+
+    <jointvel name="base_x_vel" joint="base_x"/>
+    <jointvel name="base_y_vel" joint="base_y"/>
+    <jointvel name="base_z_vel" joint="base_z"/>
+    <jointvel name="base_yaw_vel" joint="base_yaw"/>
+    <jointvel name="base_pitch_vel" joint="base_pitch"/>
+    <jointvel name="base_roll_vel" joint="base_roll"/>
+
+    
     <!-- goal. -->
     <framepos name="cube_goal_position" objtype="body" objname="goal"/>
+    <framequat name="cube_goal_orientation" objtype="body" objname="goal"/>
 
 
   </sensor>
