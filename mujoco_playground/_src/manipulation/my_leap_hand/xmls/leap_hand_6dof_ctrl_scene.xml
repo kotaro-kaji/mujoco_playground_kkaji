@@ -81,6 +81,9 @@
     <framepos name="mf_tip_position" objtype="site" objname="mf_tip" reftype="site" refname="grasp_site"/>
     <framepos name="rf_tip_position" objtype="site" objname="rf_tip" reftype="site" refname="grasp_site"/>
 
+    <!-- goal. -->
+    <framepos name="cube_goal_position" objtype="body" objname="goal"/>
+
 
   </sensor>
 

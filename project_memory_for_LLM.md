@@ -36,6 +36,43 @@ Notes
 - Other manipulation environments embed their assets locally (e.g., `franka_emika_panda/xmls/*`), but LEAP hand references the external menagerie assets by design.
 
 
+New scene: `leap_hand_6dof_ctrl_scene.xml` (my_leap_hand)
+- File: `mujoco_playground/_src/manipulation/my_leap_hand/xmls/leap_hand_6dof_ctrl_scene.xml`
+- Purpose: Add a 6-DoF controllable base that rigidly drives the LEAP hand via a weld, while reusing the standard LEAP hand and reorientation cube assets.
+- Key details:
+  - Compiler/option: `timestep=0.01`, Euler integrator, with modest solver iters; matches other LEAP scenes numerically.
+  - Worldbody:
+    - Body `hand_base` at `pos="0 0 0.6" quat="0 1 0 0"` with inertial specified.
+    - Six joints on `hand_base`: slides `base_x/y/z` and hinges `base_yaw/pitch/roll` with ranges and damping (class `base6dof`).
+    - `site base_mount_site` as a visual/reference site.
+    - Visible floor geom `name="floor"` (checkerboard) with `contype=0` and an invisible physical ground `name="ground_physical"` with `contype=1`, `conaffinity=1`, friction `0.8 0.01 0.0001`.
+    - Body `goal` is `mocap="true"` at `pos="0.325 0.17 0.0475"`, carrying a visual mesh and a physical box (group 3); used as a spatial reference.
+  - Equality:
+    - Weld: `<weld body1="hand_base" body2="leap_mount" solref="0.01 2" solimp="0.98 0.995 0.001" relpose="0 0 0 1 0 0 0"/>`.
+    - Effect: The LEAP hand (`leap_mount` defined in `leap_rh_mjx.xml`) is rigidly attached to the 6-DoF base. Driving the base joints moves the entire hand.
+  - Sensors present:
+    - Cube: `cube_position`, `cube_orientation`, `cube_linvel`, `cube_angvel`, `cube_angacc`, `cube_upvector` (all frame sensors on `cube`).
+    - Hand: `palm_position` (site `grasp_site`), and fingertips `th/if/mf/rf` tip positions relative to `grasp_site`.
+    - Note: There is currently NO `cube_goal_orientation` or `goal_position` sensor defined in this scene.
+  - Actuators:
+    - Six `position` actuators for base joints: `act_base_x/y/z/yaw/pitch/roll` with `kp` and `forcerange` tuned for stability.
+    - Finger actuators are provided by the included `leap_rh_mjx.xml` as usual. Total `nu` = 16 finger + 6 base = 22 (order: included file actuators first, then scene actuators).
+  - Keyframe `home`:
+    - Commented qpos order: base(6), `leap_mount_freejoint`(7), finger joints(16), `cube_freejoint`(7).
+    - Provides `ctrl` targets (mostly zeros, one finger target `0.3`), and sets `mpos/mquat` for the `goal` body.
+
+- Compatibility notes vs existing env code (`LeapHandEnv`, `CubeReorient`/`MyCubeReorient`):
+  - Missing sensor: `cube_goal_orientation`. Existing reorient envs call `get_cube_goal_orientation` and will raise if the sensor is absent. If reusing those envs with this scene, add to `<sensor>`:
+    - `<framequat name="cube_goal_orientation" objtype="body" objname="goal"/>`
+  - Observation expectations: Existing envs assume fingertip and palm sensors exist (they do), and history buffers of size tied to 16 hand joints (unchanged because indexing is by `JOINT_NAMES`).
+  - Action interface: Env code uses `self.mjx_model.nu` and delta-to-target control, so it can handle `nu=22`. If you intend base-only control for simple tasks, you can (in a new env) slice actions to 6 and keep finger `ctrl` fixed to the keyframe.
+  - Goal position: If you want position-only tasks (cube-to-fixed-goal or palm-to-goal), consider adding `<framepos name="goal_position" objtype="body" objname="goal"/>`, or read the constant from the keyframe `mpos`.
+
+- Intended simple-task usage:
+  - Base-only reach: minimize ‖palm − cube‖ using present sensors; fingers held at default.
+  - Push-X: reward cube +X progress; action = base 6D; no extra sensors needed.
+  - Cube-to-fixed-goal: reward on ‖cube − goal_pos_const‖; can hardcode from keyframe `mpos` if not adding a `goal_position` sensor.
+
 LEAP Hand (my_leap_hand) XML set overview
 - Files (path: `mujoco_playground/_src/manipulation/my_leap_hand/xmls/`):
   - `leap_rh_mjx.xml`: Right-hand MJCF definition (model="leap_rh").

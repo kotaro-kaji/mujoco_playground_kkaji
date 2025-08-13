@@ -17,11 +17,12 @@
 from mujoco_playground._src import mjx_env
 
 ROOT_PATH = mjx_env.ROOT_PATH / "manipulation" / "my_leap_hand"
-CUBE_XML = ROOT_PATH / "xmls" / "my_scene_mjx_cube.xml"
+CUBE_XML = ROOT_PATH / "xmls" / "leap_hand_6dof_ctrl_scene.xml"
 
-NQ = 16
-NV = 16
-NU = 16
+# 22は、base(6), finger joints(16)
+NQ = 22
+NV = 22
+NU = 22
 
 JOINT_NAMES = [
     # index
@@ -74,4 +75,13 @@ FINGERTIP_NAMES = [
     "if_tip",
     "mf_tip",
     "rf_tip",
+]
+
+BASE_JOINTS_NAMES = [
+    "base_x",
+    "base_y",
+    "base_z",
+    "base_yaw",
+    "base_pitch",
+    "base_roll",
 ]
