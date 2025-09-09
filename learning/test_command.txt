@@ -13,4 +13,7 @@ __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.vi
 
 __NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xmls/ur5e_leap_scene.xml
 
+__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia python -m mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xmls/leap_hand_6dof_ctrl_scene.xml 2>&1 | tee mj_error.log
+
+
 python quick_mjcf_check.py 2>&1 | tee mj_error.log
