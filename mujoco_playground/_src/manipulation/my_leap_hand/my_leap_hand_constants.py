@@ -20,7 +20,7 @@ ROOT_PATH = mjx_env.ROOT_PATH / "manipulation" / "my_leap_hand"
 CUBE_XML = ROOT_PATH / "xmls" / "leap_hand_6dof_ctrl_scene.xml"
 
 # 22は、base(6), finger joints(16)
-NQ = 22
+NQ = 22 #23な気もしてきた。baseの姿勢をquatで取得している可能性あり。
 NV = 22
 NU = 22  # 実際の制御次元は手指16 + base6 = 22
 

@@ -102,63 +102,27 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
     self._default_pose = self._init_q[self._hand_qids]
 
   def reset(self, rng: jax.Array) -> mjx_env.State:
-    # Randomize the goal orientation.
-    rng, goal_rng = jax.random.split(rng)
-    goal_quat = my_leap_hand_base.uniform_quat(goal_rng)
+    # Use XML keyframe-defined initial state (already verified in the viewer).
+    home_key = self._mj_model.keyframe("home")
 
-    # Randomize the hand pose.
-    rng, pos_rng, vel_rng = jax.random.split(rng, 3)
-    q_hand = jp.clip(
-        self._default_pose + 0.1 * jax.random.normal(pos_rng, (consts.NQ,)),
-        self._lowers,
-        self._uppers,
-    )
-    v_hand = 0.0 * jax.random.normal(vel_rng, (consts.NV,))
+    # Full-state initialization from keyframe.
+    qpos = self._init_q
+    qvel = jp.zeros(self.mjx_model.nv)
+    ctrl = jp.array(home_key.ctrl)
 
-    # Randomize the cube pose.
-    rng, p_rng, quat_rng = jax.random.split(rng, 3)
-    start_pos = jp.array([0.1, 0.0, 0.05]) + jax.random.uniform(
-        p_rng, (3,), minval=-0.01, maxval=0.01
-    )
-    start_quat = my_leap_hand_base.uniform_quat(quat_rng)
-    q_cube = jp.array([*start_pos, *start_quat])
-    v_cube = jp.zeros(6)
-
-    qpos = jp.concatenate([q_hand, q_cube])
-    qvel = jp.concatenate([v_hand, v_cube])
     data = mjx_env.init(
         self.mjx_model,
         qpos=qpos,
-        ctrl=q_hand,
         qvel=qvel,
+        ctrl=ctrl,
         mocap_pos=self._init_mpos,
-        mocap_quat=goal_quat,
+        mocap_quat=self._init_mquat,
     )
 
-    rng, pert1, pert2, pert3 = jax.random.split(rng, 4)
-    pert_wait_steps = jax.random.randint(
-        pert1,
-        (1,),
-        minval=self._config.pert_config.pert_wait_steps[0],
-        maxval=self._config.pert_config.pert_wait_steps[1],
-    )
-    pert_duration_steps = jax.random.randint(
-        pert2,
-        (1,),
-        minval=self._config.pert_config.pert_duration_steps[0],
-        maxval=self._config.pert_config.pert_duration_steps[1],
-    )
-    pert_lin = jax.random.uniform(
-        pert3,
-        minval=self._config.pert_config.linear_velocity_pert[0],
-        maxval=self._config.pert_config.linear_velocity_pert[1],
-    )
-    pert_ang = jax.random.uniform(
-        pert3,
-        minval=self._config.pert_config.angular_velocity_pert[0],
-        maxval=self._config.pert_config.angular_velocity_pert[1],
-    )
-    pert_velocity = jp.array([pert_lin] * 3 + [pert_ang] * 3)
+    # Deterministic perturbation defaults since reset is deterministic here.
+    pert_wait_steps = jp.array([self._config.pert_config.pert_wait_steps[1]])
+    pert_duration_steps = jp.array([self._config.pert_config.pert_duration_steps[0]])
+    pert_velocity = jp.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
     info = {
         "rng": rng,
@@ -209,8 +173,11 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
     )
     state.info["motor_targets"] = motor_targets
 
-    ori_error = self._cube_orientation_error(data)
-    success = ori_error < self._config.success_threshold
+    # Position-based success: cube close to goal position
+    cube_pos = self.get_cube_position(data)
+    goal_pos = self.get_cube_goal_position(data)
+    pos_error = jp.linalg.norm(cube_pos - goal_pos)
+    success = pos_error < self._config.success_threshold
     state.info["steps_since_last_success"] = jp.where(
         success, 0, state.info["steps_since_last_success"] + 1
     )
@@ -231,19 +198,7 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
     }
     reward = sum(rewards.values()) * self.dt  # pylint: disable=redefined-outer-name
 
-    # Sample a new goal orientation.
-    state.info["rng"], goal_rng = jax.random.split(state.info["rng"])
-    state.info["goal_quat_dquat"] = jp.where(
-        success,
-        3 + jax.random.uniform(goal_rng, (3,), minval=-2, maxval=2),
-        state.info["goal_quat_dquat"] * 0.8,
-    )
-    goal_quat = math.quat_integrate(
-        state.data.mocap_quat[0],
-        state.info["goal_quat_dquat"],
-        2 * jp.array(self.dt),
-    )
-    data = data.replace(mocap_quat=jp.array([goal_quat]))
+    # Position-only task: keep goal pose fixed; record success
     state.metrics["reward/success"] = success.astype(float)
     reward += success * self._config.reward_config.success_reward
 
@@ -277,11 +232,12 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
         * self._config.obs_noise.scales.joint_pos
     )
 
-    # Joint position error history.
+    # Joint position error history (hand only)
+    n_hand = len(self._hand_qids)
     qpos_error_history = (
-        jp.roll(info["qpos_error_history"], 16)
-        .at[:16]
-        .set(noisy_joint_angles - info["motor_targets"])
+        jp.roll(info["qpos_error_history"], n_hand)
+        .at[:n_hand]
+        .set(noisy_joint_angles - info["motor_targets"][:n_hand])
     )
     info["qpos_error_history"] = qpos_error_history
 
@@ -323,7 +279,7 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
     )
     info["cube_pos_error_history"] = cube_pos_error_history
 
-    # Cube orientation error history.
+    # For position task: keep orientation history but compute vs fixed goal quat
     goal_quat = self.get_cube_goal_orientation(data)
     quat_diff = mjx._src.math.quat_mul(
         noisy_pose[3:], mjx._src.math.quat_inv(goal_quat)
@@ -343,15 +299,15 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
     xmat_diff_uncorrupted = math.quat_to_mat(quat_diff_uncorrupted).ravel()[3:]
 
     state = jp.concatenate([
-        noisy_joint_angles,  # 16
-        qpos_error_history,  # 16 * history_len
-        cube_pos_error_history,  # 3 * history_len
-        cube_ori_error_history,  # 6 * history_len
+        noisy_joint_angles, # 16    
+        qpos_error_history, # 16 * history_len
+        cube_pos_error_history, # 3 * history_len
+        cube_ori_error_history, # 6 * history_len
         info["last_act"],  # 16
     ])
 
     privileged_state = jp.concatenate([
-        state,
+        state,  
         data.qpos[self._hand_qids],
         data.qvel[self._hand_dqids],
         self.get_fingertip_positions(data),
@@ -379,13 +335,11 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
       done: jax.Array,
   ) -> dict[str, jax.Array]:
     del done, metrics  # Unused.
-
+    # Position-to-goal reward
     cube_pos = self.get_cube_position(data)
-    palm_pos = self.get_palm_position(data)
-    cube_pose_mse = jp.linalg.norm(palm_pos - cube_pos)
-    cube_pos_reward = reward.tolerance(
-        cube_pose_mse, (0, 0.02), margin=0.05, sigmoid="linear"
-    )
+    goal_pos = self.get_cube_goal_position(data)
+    pos_err = jp.linalg.norm(cube_pos - goal_pos)
+    cube_pos_reward = reward.tolerance(pos_err, (0, 0.02), margin=0.2, sigmoid="linear")
 
     terminated = self._get_termination(data, info)
 
@@ -394,7 +348,7 @@ class MyCubeReorient(my_leap_hand_base.MyLeapHandEnv):
     )
 
     return {
-        "orientation": self._reward_cube_orientation(data),
+        "orientation": self._reward_cube_orientation(data),  # keep for shaping if needed
         "position": cube_pos_reward,
         "termination": terminated,
         "hand_pose": hand_pose_reward,
