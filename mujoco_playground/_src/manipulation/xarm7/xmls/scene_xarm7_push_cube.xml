@@ -1,0 +1,79 @@
+<!-- XArm7 PushCube scene (Stage 1): standalone MJCF for visual validation. -->
+<mujoco model="xarm7_push_cube">
+  <!-- Use RoboManipBaselines assets (meshes/textures) via relative paths. -->
+  <compiler angle="radian"
+            autolimits="true"
+            meshdir="../../../../../RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/assets/meshes"
+            texturedir="../../../../../RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/assets/textures"/>
+
+  <option timestep="0.004" integrator="implicitfast"/>
+  <size memory="2M"/>
+  <statistic extent="2.0"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.1 0.1 0.1" specular="0.0 0.0 0.0"/>
+    <rgba haze="1.0 1.0 1.0 1.0"/>
+    <global azimuth="150" elevation="-20"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.9 1.0 1.0" rgb2="0.9 1.0 1.0" width="512" height="3072"/>
+    <texture name="floor" file="floor/floor1.png" type="2d"/>
+    <material name="floor" texture="floor" specular="0.2" shininess="0.3"/>
+    <texture name="wall" file="wall/wall1.png" type="cube"/>
+    <material name="wall" texture="wall" specular="0.2" shininess="0.3"/>
+    <texture name="table" file="general/metal1.png" type="cube"/>
+    <material name="table" texture="table" rgba="0.31 0.55 0.30 1.0" specular="0.5" shininess="1.0"/>
+    <material name="box_mat" rgba="0.9 0.4 0.2 1.0"/>
+    <material name="target_mat" rgba="0.2 0.9 0.4 0.4"/>
+  </asset>
+
+  <!-- XArm7 robot model and actuators -->
+  <include file="../../../../../RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/robots/xarm7/xarm7_config.xml"/>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true" diffuse="0.3 0.3 0.3"/>
+
+    <camera name="front" mode="fixed" pos="0.65 0.0 1.5" euler="0.0 0.785398 1.5708"/>
+    <camera name="side" mode="fixed" pos="0.0 -0.85 0.95" euler="1.5708 0.0 0.0"/>
+
+    <!-- Workspace -->
+    <geom name="floor" size="0 0 0.05" type="plane" material="floor"/>
+    <geom name="wall" type="box" size="10 10 0.01" pos="0 0 10" zaxis="0 0 1" material="wall"/>
+
+    <body name="table">
+      <geom type="box" size="0.3 0.45 0.019" pos="0 0 0.721" material="table"/>
+      <geom type="box" size="0.025 0.025 0.351" pos="0.23 0.34 0.351" material="table"/>
+      <geom type="box" size="0.025 0.025 0.351" pos="-0.23 0.34 0.351" material="table"/>
+      <geom type="box" size="0.025 0.025 0.351" pos="0.23 -0.34 0.351" material="table"/>
+      <geom type="box" size="0.025 0.025 0.351" pos="-0.23 -0.34 0.351" material="table"/>
+    </body>
+
+    <!-- Robot root pose (tuned to place base near table as in examples) -->
+    <body name="xarm7_root_frame" pos="-0.22 0.0 0.74">
+      <include file="../../../../../RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/robots/xarm7/xarm7_body.xml"/>
+    </body>
+
+    <!-- Push target object -->
+    <body name="box" pos="0.5 0.0 0.74">
+      <freejoint/>
+      <geom name="box" type="box" size="0.02 0.02 0.02" material="box_mat" friction="1.0 0.005 0.0001"/>
+    </body>
+
+    <!-- Goal mocap target -->
+    <body name="mocap_target" mocap="true" pos="0.55 0.05 0.76">
+      <geom type="box" size="0.015 0.015 0.002" material="target_mat" contype="0" conaffinity="0"/>
+    </body>
+  </worldbody>
+
+  <!-- Keep contact behavior simple for stage 1 visual check -->
+  <contact>
+    <exclude body1="xarm7_body" body2="box"/>
+  </contact>
+
+  <!-- Minimal keyframe placeholder (not used by viewer) -->
+  <keyframe>
+    <key name="home"/>
+  </keyframe>
+</mujoco>
+
