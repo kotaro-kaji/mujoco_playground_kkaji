@@ -30,6 +30,7 @@ from mujoco_playground._src.manipulation.leap_hand import reorient as leap_cube_
 from mujoco_playground._src.manipulation.leap_hand import rotate_z as leap_rotate_z
 
 from mujoco_playground._src.manipulation.my_leap_hand import my_reorient as my_leap_reorient
+from mujoco_playground._src.manipulation.xarm7 import push_cube as xarm7_push_cube
 
 
 mjx_env.ensure_menagerie_exists()  # Ensure menagerie exists when module is imported.
@@ -42,6 +43,7 @@ _envs = {
     "PandaPickCubeCartesian": panda_pick_cartesian.PandaPickCubeCartesian,
     "PandaOpenCabinet": panda_open_cabinet.PandaOpenCabinet,
     "PandaRobotiqPushCube": robotiq_push_cube.PandaRobotiqPushCube,
+    "XArm7PushCube": xarm7_push_cube.XArm7PushCube,
     "LeapCubeReorient": leap_cube_reorient.CubeReorient,
     "LeapCubeRotateZAxis": leap_rotate_z.CubeRotateZAxis,
     "MyCubeReorient": my_leap_reorient.MyCubeReorient,
@@ -55,6 +57,7 @@ _cfgs = {
     "PandaPickCubeCartesian": panda_pick_cartesian.default_config,
     "PandaOpenCabinet": panda_open_cabinet.default_config,
     "PandaRobotiqPushCube": robotiq_push_cube.default_config,
+    "XArm7PushCube": xarm7_push_cube.default_config,
     "LeapCubeReorient": leap_cube_reorient.default_config,
     "LeapCubeRotateZAxis": leap_rotate_z.default_config,
     "MyCubeReorient": my_leap_reorient.default_config,
