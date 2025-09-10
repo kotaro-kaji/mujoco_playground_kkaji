@@ -1,11 +1,11 @@
 <!-- XArm7 PushCube scene (Stage 1): standalone MJCF for visual validation. -->
 <mujoco model="xarm7_push_cube">
   <!-- Use RoboManipBaselines assets (meshes/textures) via relative paths. -->
-  <!-- NOTE: Paths below are relative to your repo root (run viewer from repo root). -->
+  <!-- Local copies: assets live under ./assets relative to this file. -->
   <compiler angle="radian"
             autolimits="true"
-            meshdir="RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/assets/meshes"
-            texturedir="RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/assets/textures"/>
+            meshdir="assets/meshes"
+            texturedir="assets/textures"/>
 
   <option timestep="0.004" integrator="implicitfast"/>
   <size memory="2M"/>
@@ -30,7 +30,7 @@
   </asset>
 
   <!-- XArm7 robot model and actuators -->
-  <include file="RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/robots/xarm7/xarm7_config.xml"/>
+  <include file="robots/xarm7/xarm7_config.xml"/>
 
   <worldbody>
     <light pos="0 0 1.5" dir="0 0 -1" directional="true" diffuse="0.3 0.3 0.3"/>
@@ -52,7 +52,7 @@
 
     <!-- Robot root pose (tuned to place base near table as in examples) -->
     <body name="xarm7_root_frame" pos="-0.22 0.0 0.74">
-      <include file="RoboManipBaselines/robo_manip_baselines/envs/assets/mujoco/robots/xarm7/xarm7_body.xml"/>
+      <include file="robots/xarm7/xarm7_body.xml"/>
     </body>
 
     <!-- Push target object -->
