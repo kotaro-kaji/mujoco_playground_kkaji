@@ -44,6 +44,8 @@ _envs = {
     "PandaOpenCabinet": panda_open_cabinet.PandaOpenCabinet,
     "PandaRobotiqPushCube": robotiq_push_cube.PandaRobotiqPushCube,
     "XArm7PushCube": xarm7_push_cube.XArm7PushCube,
+    # Alias for convenience (case-insensitive CLI usage)
+    "Xarm7PushCube": xarm7_push_cube.XArm7PushCube,
     "LeapCubeReorient": leap_cube_reorient.CubeReorient,
     "LeapCubeRotateZAxis": leap_rotate_z.CubeRotateZAxis,
     "MyCubeReorient": my_leap_reorient.MyCubeReorient,
@@ -58,6 +60,8 @@ _cfgs = {
     "PandaOpenCabinet": panda_open_cabinet.default_config,
     "PandaRobotiqPushCube": robotiq_push_cube.default_config,
     "XArm7PushCube": xarm7_push_cube.default_config,
+    # Alias for convenience (case-insensitive CLI usage)
+    "Xarm7PushCube": xarm7_push_cube.default_config,
     "LeapCubeReorient": leap_cube_reorient.default_config,
     "LeapCubeRotateZAxis": leap_rotate_z.default_config,
     "MyCubeReorient": my_leap_reorient.default_config,
