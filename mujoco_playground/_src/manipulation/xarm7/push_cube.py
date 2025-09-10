@@ -329,55 +329,47 @@ class XArm7PushCube(xarm7_base.XArm7Base):
     state.metrics["success_1"] = success_cond_1.astype(float)
     state.metrics["success_2"] = success_cond_2.astype(float)
 
-    # calculate success counter for next step
-    prev = state.info["prev_step_success"]
-    curr = (success_cond_1 & success_cond_2).astype(int)
-    step_cnt = state.info["success_step_count"] + curr
-    state.info.update(
-        prev_step_success=curr,
-        success_step_count=step_cnt - curr * prev,
+    # calculate success counter for next step (match Panda impl)
+    state.info["prev_step_success"] = (success_cond_1 & success_cond_2).astype(
+        int
     )
-
-    # success wait reward
-    success_wait = (
-        (success_cond_1 & success_cond_2) & (state.info["prev_step_success"] == 1)
-    ).astype(float)
-
-    return state, success.astype(float), success_wait
-
-  def _reset_if_success(self, state: mjx_env.State, success: jax.Array):
-    # curriculum using both position and orientation success.
-    cond = success.astype(bool)
-    id_next = jp.where(cond, jp.minimum(4, state.info["curriculum_id"] + 1), 0)
-    state.info["curriculum_id"] = id_next
-
-    # move target according to curriculum
-    self._mjx_model = self._mjx_model.tree_replace(
-        {
-            "opt.timestep": jp.array(self.sim_dt),
-        }
+    state.info["success_step_count"] = jp.where(
+        state.info["prev_step_success"], state.info["success_step_count"] + 1, 0
     )
+    state.info["prev_step_success"] *= 1 - success
+    state.info["success_step_count"] *= 1 - success
 
-    rng = state.info["rng"]
-    rng, rng1, rng2 = jax.random.split(rng, 3)
-    angle = state.info["angle_curriculum"][id_next]
-    max_angle_rad = angle * jp.pi / 180
-    target_quat = math.axis_angle_to_quat(
-        jp.array([0.0, 0.0, 1.0]),
-        jax.random.uniform(rng1, minval=0.0, maxval=max_angle_rad),
+    sub_success = success_cond_1 & success_cond_2
+    return state, success, sub_success
+
+  def _reset_if_success(
+      self, state: mjx_env.State, success: jax.Array
+  ) -> mjx_env.State:
+    target_pos = state.data.mocap_pos[self._mocap_target, :].ravel()
+    target_quat = state.data.mocap_quat[self._mocap_target, :].squeeze()
+    # increase curriculum step
+    state.info["curriculum_id"] += success.astype(int)
+    max_pos = state.info["pos_curriculum"][state.info["curriculum_id"]]
+    max_angle = state.info["angle_curriculum"][state.info["curriculum_id"]]
+    # sample new target position and orientation
+    new_target_pos = jp.where(
+        success,
+        self._get_rand_target_pos(state.info["rng"], max_pos),
+        target_pos,
     )
-
-    offset = state.info["pos_curriculum"][id_next]
-    min_pos = jp.array([-offset * 0.4, -offset, -0.005]) + self._init_obj_pos
-    max_pos = jp.array([offset * 0.4, offset, 0.005]) + self._init_obj_pos
-    target_pos = jax.random.uniform(rng2, (3,), minval=min_pos, maxval=max_pos)
-
-    state.info["rng"] = rng
-    state.data = state.data.replace(
-        mocap_quat=state.data.mocap_quat.at[self._mocap_target].set(target_quat),
-        mocap_pos=state.data.mocap_pos.at[self._mocap_target].set(target_pos),
+    new_target_quat = jp.where(
+        success,
+        math.quat_mul(
+            state.data.xquat[self._obj_body],
+            self._get_rand_target_quat(state.info["rng"], max_angle),
+        ),
+        target_quat,
     )
-    return state
+    data = state.data.replace(
+        mocap_pos=jp.array([new_target_pos]),
+        mocap_quat=jp.array([new_target_quat]),
+    )
+    return state.replace(data=data)
 
   def _get_reward(
       self, data: mjx.Data, info: Dict[str, Any], action: jax.Array
@@ -554,4 +546,3 @@ class XArm7PushCube(xarm7_base.XArm7Base):
   @property
   def action_size(self):
     return 7
-
