@@ -101,7 +101,7 @@ def brax_ppo_config(env_name: str) -> config_dict.ConfigDict:
     rl_config.num_envs = 2048
     rl_config.batch_size = 512
     rl_config.network_factory.policy_hidden_layer_sizes = (32, 32, 32, 32)
-  elif env_name == "PandaRobotiqPushCube":
+  elif env_name == "PandaRobotiqPushCube" or env_name in ("XArm7PushCube", "Xarm7PushCube"):
     rl_config.num_timesteps = 1_800_000_000
     rl_config.num_evals = 10
     rl_config.unroll_length = 100
