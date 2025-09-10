@@ -1,5 +1,4 @@
-(mujoco_playground) kotaro@kotaro-Prestige-16-AI-Studio-B1VFG:~/my_projects/robot/clone/mujoco_playground$ python learning/train_jax_ppo.py --env_name Xarm7PushCube --num_timesteps=2000 --num_eval
-s=1 --num_envs=1 --batch_size=16
+(mujoco_playground) kotaro@kotaro-Prestige-16-AI-Studio-B1VFG:~/my_projects/robot/clone/mujoco_playground$ python learning/train_jax_ppo.py --env_name Xarm7PushCube --num_timesteps=2000 --num_evals=1 --num_envs=1 --batch_size=16
 Traceback (most recent call last):
   File "/home/kotaro/my_projects/robot/clone/mujoco_playground/learning/train_jax_ppo.py", line 506, in <module>
     app.run(main)
@@ -8,9 +7,12 @@ Traceback (most recent call last):
   File "/home/kotaro/miniconda3/envs/mujoco_playground/lib/python3.12/site-packages/absl/app.py", line 261, in _run_main
     sys.exit(main(argv))
              ^^^^^^^^^^
-  File "/home/kotaro/my_projects/robot/clone/mujoco_playground/learning/train_jax_ppo.py", line 205, in main
-    env_cfg = registry.get_default_config(_ENV_NAME.value)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/home/kotaro/my_projects/robot/clone/mujoco_playground/mujoco_playground/_src/registry.py", line 46, in get_default_config
-    raise ValueError(f"Env '{env_name}' not found in default configs.")
-ValueError: Env 'Xarm7PushCube' not found in default configs.
+  File "/home/kotaro/my_projects/robot/clone/mujoco_playground/learning/train_jax_ppo.py", line 207, in main
+    ppo_params = get_rl_config(_ENV_NAME.value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kotaro/my_projects/robot/clone/mujoco_playground/learning/train_jax_ppo.py", line 168, in get_rl_config
+    return manipulation_params.brax_ppo_config(env_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/kotaro/my_projects/robot/clone/mujoco_playground/mujoco_playground/config/manipulation_params.py", line 175, in brax_ppo_config
+    raise ValueError(f"Unsupported env: {env_name}")
+ValueError: Unsupported env: Xarm7PushCube
