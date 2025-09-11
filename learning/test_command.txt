@@ -28,3 +28,7 @@ python mujoco.viewer --mjcf=mujoco_playground/_src/manipulation/my_leap_hand/xml
 
 python quick_mjcf_check.py 2>&1 | tee mj_error.log
 
+うまく行くかわからないけど
+python learning/view_env.py --env_name XArm7PushCube
+python learning/view_env.py --env_name PandaRobotiqPushCube
+

@@ -1,0 +1,4 @@
+/home/kotaro/miniconda3/envs/mujoco_playground/lib/python3.12/site-packages/glfw/__init__.py:917: GLFWError: (65548) b'Wayland: The platform does not provide the window position'
+  warnings.warn(message, GLFWError)
+WARNING: OpenGL error 0x502 in or before mjr_makeContext
+
