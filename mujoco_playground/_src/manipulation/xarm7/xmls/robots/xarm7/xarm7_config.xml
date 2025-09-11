@@ -1,5 +1,6 @@
 <mujoco model="xarm7_config">
-  <compiler angle="radian" autolimits="true" meshdir="../../assets/meshes"/>
+  <!-- Resolve meshes relative to the scene XML directory. -->
+  <compiler angle="radian" autolimits="true" meshdir="assets/meshes"/>
 
   <option integrator="implicitfast"/>
 

@@ -1,42 +1,49 @@
 <mujoco model="xarm7_body">
   <body name="xarm7_body">
     <body name="link_base" pos="0 0 0" childclass="xarm7">
-      <inertial pos="-0.021131 -0.0016302 0.056488" quat="0.696843 0.20176 0.10388 0.677479" mass="9.6955" diaginertia="0.03766 0.031057 0.025836"/>
-      <geom material="white" mesh="link_base"/>
-      <body name="link1" pos="0 0 0.267" quat="0.70711 0 0 0.70711">
-        <inertial pos="5.81615e-05 -0.0453627 0.0781599" quat="0.883405 0.467289 4.67642e-05 7.42927e-05" mass="3.813" diaginertia="0.0123725 0.00686035 0.00884269"/>
-        <joint name="joint1" axis="0 0 1"/>
-        <geom material="white" mesh="link1"/>
-        <site name="force_sensor" pos="-9e-05 -0.02 0.07816"/>
-        <body name="link2" pos="0 -0.11 0.092" quat="0.70711 0 0 0.70711">
-          <inertial pos="1.02647e-05 0.0916639 -5.49827e-05" quat="0.500012 -0.499995 -0.499994 0.500002" mass="4.26626" diaginertia="0.0223777 0.00445769 0.0201591"/>
-          <joint name="joint2" axis="0 0 1"/>
-          <geom material="white" mesh="link2"/>
-          <body name="link3" pos="0 -0.0825 0" quat="0.70711 0 0 0.70711">
-            <inertial pos="-3.69773e-05 0.0109005 0.02599" quat="0.50003 0.499975 -0.499964 -0.500031" mass="3.4462" diaginertia="0.00749484 0.00629947 0.00358298"/>
-            <joint name="joint3" axis="0 0 1"/>
-            <geom material="white" mesh="link3"/>
-            <body name="link4" pos="0 0.0825 0.0" quat="0.70711 0 0 0.70711">
-              <inertial pos="-1.2795e-05 0.0577991 -0.0468973" quat="0.500016 0.499995 -0.499997 -0.500011" mass="1.97616" diaginertia="0.0059885 0.00341876 0.0058087"/>
-              <joint name="joint4" axis="0 0 1"/>
-              <geom material="white" mesh="link4"/>
-              <body name="link5" pos="0 -0.0825 0.0" quat="0.70711 0 0 0.70711">
-                <inertial pos="1.63521e-05 0.031042 -0.0203656" quat="0.499989 0.500001 -0.499994 -0.500017" mass="1.4" diaginertia="0.00260037 0.00194641 0.00243634"/>
-                <joint name="joint5" axis="0 0 1"/>
-                <geom material="white" mesh="link5"/>
-                <body name="link6" pos="0 0.071 0.0" quat="0.70711 0 0 0.70711">
-                  <inertial pos="3.17377e-06 -0.00753547 0.0486608" quat="0.500004 0.500005 -0.499992 -0.499999" mass="1.09834" diaginertia="0.00105083 0.000848253 0.000736388"/>
-                  <joint name="joint6" axis="0 0 1"/>
-                  <geom material="white" mesh="link6"/>
-                  <body name="link7" pos="0 -0.071 0.0" quat="0.70711 0 0 0.70711">
-                    <inertial pos="1.18028e-05 -0.00882174 0.08393" quat="0.582838 -0.3972 -0.397203 0.582855" mass="0.489949" diaginertia="0.000545804 0.00063588 0.000433156"/>
-                    <joint name="joint7" axis="0 0 1"/>
-                    <geom material="white" mesh="link7"/>
-                    <body name="end_tool" pos="0.0 0.0555 0.0879">
-                      <inertial pos="-0.004367 -0.018967 0.053471" quat="0.498683 -0.501312 0.499118 0.500881" mass="0.691368" diaginertia="0.00019308 0.000296209 0.000155315"/>
-                      <geom material="gray" mesh="end_tool"/>
-                      <body name="base_link" pos="-0.03346 0.0 0.07">
-                        <inertial pos="0.000753446 -0.000454315 0.0556814" quat="0.500192 0.499664 0.499703 0.500441"
+      <inertial pos="-0.021131 -0.0016302 0.056488" quat="0.696843 0.20176 0.10388 0.680376" mass="0.88556"
+        diaginertia="0.00382023 0.00335282 0.00167725"/>
+      <geom mesh="link_base"/>
+      <body name="link1" pos="0 0 0.267">
+        <inertial pos="-0.0002 0.02905 -0.01233" quat="0.978953 -0.202769 -0.00441617 -0.0227264" mass="2.382"
+          diaginertia="0.00569127 0.00533384 0.00293865"/>
+        <joint name="joint1" class="size1"/>
+        <geom mesh="link1"/>
+        <body name="link2" quat="1 -1 0 0">
+          <inertial pos="0.00022 -0.12856 0.01735" quat="0.50198 0.86483 -0.00778841 0.00483285" mass="1.869"
+            diaginertia="0.00959898 0.00937717 0.00201315"/>
+          <joint name="joint2" range="-2.059 2.0944" class="size1"/>
+          <geom mesh="link2"/>
+          <body name="link3" pos="0 -0.293 0" quat="1 1 0 0">
+            <inertial pos="0.0466 -0.02463 -0.00768" quat="0.913819 0.289775 0.281481 -0.0416455" mass="1.6383"
+              diaginertia="0.00351721 0.00294089 0.00195868"/>
+            <joint name="joint3" class="size2"/>
+            <geom mesh="link3"/>
+            <body name="link4" pos="0.0525 0 0" quat="1 1 0 0">
+              <inertial pos="0.07047 -0.11575 0.012" quat="0.422108 0.852026 -0.126025 0.282832" mass="1.7269"
+                diaginertia="0.00657137 0.00647948 0.00186763"/>
+              <joint name="joint4" range="-0.19198 3.927" class="size2"/>
+              <geom mesh="link4"/>
+              <body name="link5" pos="0.0775 -0.3425 0" quat="1 1 0 0">
+                <inertial pos="-0.00032 0.01604 -0.026" quat="0.999311 -0.0304457 0.000577067 0.0212082" mass="1.3203"
+                  diaginertia="0.00534729 0.00499076 0.0013489"/>
+                <joint name="joint5" class="size2"/>
+                <geom mesh="link5"/>
+                <body name="link6" quat="1 1 0 0">
+                  <inertial pos="0.06469 0.03278 0.02141" quat="-0.217672 0.772419 0.16258 0.574069" mass="1.325"
+                    diaginertia="0.00245421 0.00221646 0.00107273"/>
+                  <joint name="joint6" range="-1.69297 3.14159" class="size3"/>
+                  <geom mesh="link6"/>
+                  <body name="link7" pos="0.076 0.097 0" quat="1 -1 0 0">
+                    <inertial pos="0 -0.00677 -0.01098" quat="0.487612 0.512088 -0.512088 0.487612" mass="0.17"
+                      diaginertia="0.000132176 9.3e-05 5.85236e-05"/>
+                    <joint name="joint7" class="size3"/>
+                    <geom material="gray" mesh="end_tool"/>
+                    <!-- The original gripper model can not grasp an object stably, so the mechanism and parameters are updated. -->
+                    <body name="xarm_gripper_base_link" quat="0 0 0 1">
+                      <site name="force_sensor" euler="0 0 1.5708"
+                            type="box" size="0.005 0.005 0.01" rgba="0.6 0.1 0.1 1" group="2"/>
+                      <inertial pos="-0.00065489 -0.0018497 0.048028" quat="0.997403 -0.0717512 -0.0061836 0.000477479"
                         mass="0.54156" diaginertia="0.000471093 0.000332307 0.000254799"/>
                       <geom mesh="base_link"/>
                       <body name="left_outer_knuckle" pos="0 0.035 0.059098">

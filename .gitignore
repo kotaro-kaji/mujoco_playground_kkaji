@@ -26,3 +26,6 @@ MJDATA.TXT
 **/*.avi
 **/*.mkv
 **/*.webm
+
+# Python virtual env
+.venv/
