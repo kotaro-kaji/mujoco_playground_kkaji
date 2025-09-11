@@ -21,9 +21,6 @@ from typing import Optional
 import jax
 import jax.numpy as jp
 import numpy as np
-import mujoco
-import mujoco.viewer as mj_viewer
-
 from mujoco_playground import registry
 
 
@@ -38,7 +35,20 @@ def run_viewer(
     action_mode: str = "zeros",
     action_scale: float = 0.0,
     fps_limit: Optional[float] = None,
+    gl_backend: Optional[str] = None,
+    use_prime_offload: bool = False,
 ):
+  # Configure GL backend before importing mujoco modules.
+  import os
+  if gl_backend:
+    os.environ["MUJOCO_GL"] = gl_backend
+  if use_prime_offload:
+    os.environ["__NV_PRIME_RENDER_OFFLOAD"] = "1"
+    os.environ["__GLX_VENDOR_LIBRARY_NAME"] = "nvidia"
+
+  import mujoco
+  import mujoco.viewer as mj_viewer
+
   # Load env via the repo registry (uses dynamic XML + embedded assets).
   cfg = registry.get_default_config(env_name)
   env = registry.load(env_name, config=cfg)
@@ -69,7 +79,18 @@ def run_viewer(
 
   # Launch viewer and loop.
   # Use passive mode so we control stepping + sync.
-  with mj_viewer.launch_passive(mj_model, mj_data) as viewer:
+  try:
+    viewer_ctx = mj_viewer.launch_passive(mj_model, mj_data)
+  except Exception as e:
+    print(
+        "ERROR: could not create window. Try --use_prime_offload or set\n"
+        "__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia.\n"
+        "Alternatively choose backend via --gl_backend egl|osmesa|glx.\n"
+        f"Original error: {e}"
+    )
+    return
+
+  with viewer_ctx as viewer:
     viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_TRANSPARENT] = False
     viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_PERTFORCE] = False
     viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTFORCE] = False
@@ -118,6 +139,11 @@ def main():
   )
   parser.add_argument("--action_scale", type=float, default=0.2)
   parser.add_argument("--fps_limit", type=float, default=None)
+  parser.add_argument("--gl_backend", type=str, default=None,
+                      choices=["egl", "glx", "osmesa", None],
+                      help="MuJoCo GL backend (set before import).")
+  parser.add_argument("--use_prime_offload", action="store_true",
+                      help="Set NVIDIA PRIME offload env vars.")
   args = parser.parse_args()
 
   run_viewer(
@@ -126,9 +152,10 @@ def main():
       action_mode=args.action_mode,
       action_scale=args.action_scale,
       fps_limit=args.fps_limit,
+      gl_backend=args.gl_backend,
+      use_prime_offload=args.use_prime_offload,
   )
 
 
 if __name__ == "__main__":
   main()
-
